@@ -1,0 +1,5 @@
+assets/
+*.img
+*.ext4
+vmlinux*
+/tmp/
