@@ -1,5 +1,103 @@
+# =============================================================
+#  learn-agent-sandbox — .gitignore
+#
+#  Rule of thumb: commit everything a reader needs to LEARN,
+#  ignore everything a reader can DOWNLOAD or REBUILD.
+#
+#  This repo is a tutorial. Every byte in git should be
+#  human-readable. Anything binary, generated, or machine-local
+#  belongs outside.
+# =============================================================
+
+# -------------------------------------------------------------
+# 1. Downloaded VM assets  — NEVER commit
+#
+# Fetched by scripts/fetch-assets.sh at pinned versions with
+# checksums. Kernels are tens of MB; rootfs images hundreds.
+# -------------------------------------------------------------
 assets/
-*.img
-*.ext4
 vmlinux*
-/tmp/
+*.ext4
+*.img
+*.squashfs
+firecracker
+jailer
+
+# -------------------------------------------------------------
+# 2. VM snapshots  — NEVER commit (the dangerous one)
+#
+# A memory snapshot is the guest's ENTIRE RAM. A single 2 GiB
+# VM produces a 2 GiB file. One accidental commit bloats the
+# repo history permanently and cannot be undone cleanly.
+# -------------------------------------------------------------
+snapshots/
+*.snapshot
+*.snapfile
+*.mem
+mem_file*
+snapshot_file*
+
+# -------------------------------------------------------------
+# 3. VM runtime state  — machine-local, meaningless to others
+# -------------------------------------------------------------
+*.sock
+*.socket
+run/
+*.pid
+*.log
+logs/
+
+# -------------------------------------------------------------
+# 4. Secrets  — s07 needs an LLM API key
+#
+# Commit .env.example (placeholders only), never .env.
+# -------------------------------------------------------------
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+!**/testdata/*.key
+credentials.json
+
+# -------------------------------------------------------------
+# 5. Build outputs  (Go / Rust / Python)
+# -------------------------------------------------------------
+# Go
+bin/
+dist/
+*.exe
+*.test
+vendor/
+
+# Rust
+target/
+**/*.rs.bk
+# NOTE: Cargo.lock IS committed. s05 builds a binary, and a tutorial
+# must be reproducible — every reader should resolve identical deps.
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# -------------------------------------------------------------
+# 6. Editor / OS noise
+# -------------------------------------------------------------
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+*~
+
+# -------------------------------------------------------------
+# 7. Scratch
+# -------------------------------------------------------------
+tmp/
+scratch/
