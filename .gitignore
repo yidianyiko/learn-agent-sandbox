@@ -111,3 +111,4 @@ s03_snapshot_restore/snapshot.cpu
 # s04 build output and runtime state
 s04_orchestrator/sandboxd
 s04_orchestrator/state/
+s05_fork_parallel/tinyfork

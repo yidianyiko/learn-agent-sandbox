@@ -2,7 +2,7 @@
 
 [English](README.md) · [中文](README.zh.md)
 
-[s00](../s00_shared_kernel/) → [s01](../s01_first_microvm/) → [s02](../s02_write_a_vmm/) → [s03](../s03_snapshot_restore/) → **s04** → s05 → ... → s08
+[s00](../s00_shared_kernel/) → [s01](../s01_first_microvm/) → [s02](../s02_write_a_vmm/) → [s03](../s03_snapshot_restore/) → **s04** → [s05](../s05_fork_parallel/) → s06 → s07 → s08
 
 > **Needs:** `/dev/kvm`, Go, the fetched assets.
 > **Time:** about 30 minutes.
@@ -299,6 +299,6 @@ Worth doing next:
 
 ---
 
-**Next:** s05 — *Fork the machine, not the process* *(not yet written)*
+**Next:** [s05 — Fork the machine, not the process](../s05_fork_parallel/)
 s03 left a snapshot that can be restored any number of times. Now restore it ten times at
 once.

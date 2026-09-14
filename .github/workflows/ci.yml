@@ -105,6 +105,28 @@ jobs:
       - name: control plane survives being killed
         run: ./s04_orchestrator/demo.sh
 
+  s05:
+    name: s05 fork parallel
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v5
+      - name: grant access to /dev/kvm
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' \
+            | sudo tee /etc/udev/rules.d/99-kvm-for-ci.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+      - name: fork four machines from one snapshot
+        run: |
+          make -C s03_snapshot_restore
+          ( cd s03_snapshot_restore && ./tinysnap )
+          make -C s05_fork_parallel
+          ( cd s05_fork_parallel && ./tinyfork )
+      - name: fetch pinned assets
+        run: ./scripts/fetch-assets.sh
+      - name: fork a real microVM six times
+        run: ./s05_fork_parallel/fork.sh
+
   s01:
     name: s01 first microVM
     runs-on: ubuntu-24.04

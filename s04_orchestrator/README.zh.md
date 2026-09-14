@@ -2,7 +2,7 @@
 
 [English](README.md) · [中文](README.zh.md)
 
-[s00](../s00_shared_kernel/README.zh.md) → [s01](../s01_first_microvm/README.zh.md) → [s02](../s02_write_a_vmm/README.zh.md) → [s03](../s03_snapshot_restore/README.zh.md) → **s04** → s05 → ... → s08
+[s00](../s00_shared_kernel/README.zh.md) → [s01](../s01_first_microvm/README.zh.md) → [s02](../s02_write_a_vmm/README.zh.md) → [s03](../s03_snapshot_restore/README.zh.md) → **s04** → [s05](../s05_fork_parallel/README.zh.md) → s06 → s07 → s08
 
 > **需要：** `/dev/kvm`、Go、已下载的资产。
 > **耗时：** 约 30 分钟。
@@ -285,5 +285,5 @@ curl -X DELETE   localhost:8080/sandbox/<id>
 
 ---
 
-**下一章：** s05 — *fork 机器，而不是 fork 进程* *（尚未写完）*
+**下一章：** [s05 — fork 机器，而不是 fork 进程](../s05_fork_parallel/README.zh.md)
 s03 留下了一个可以被无限次恢复的快照。**现在同时恢复它十次。**
