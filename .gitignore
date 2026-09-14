@@ -119,3 +119,4 @@ s05_fork_parallel/tinyfork
 s06_in_vm_agent/target/
 s06_in_vm_agent/initramfs.cpio
 s07_networking/tapwire
+s08_sdk_and_agent/__pycache__/

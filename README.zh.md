@@ -6,7 +6,8 @@
 
 [English](README.md) · [中文](README.zh.md)
 
-> ⚠️ **状态：早期。** 设计已定稿，章节正在写。当前进度见[章节表](#章节)。
+> **九章全部写完，CI 每次推送都会真实跑一遍。**
+> 从 [s00](s00_shared_kernel/) 开始——它只需要 Docker。
 
 ---
 
@@ -59,7 +60,7 @@ Agent 在运行时写代码，并立刻执行它。没有 review，没有部署�
 | **s05** | [fork 机器，而不是 fork 进程](s05_fork_parallel/) | 六台 256 MiB 的 VM 只占 76 MB —— 一个 `mmap` 标志位共享了它们没改过的一切 | **C** + shell | 是 | ✅ |
 | **s06** | [里面得有个人](s06_in_vm_agent/) | 零依赖 Rust agent 作为 PID 1，经 vsock 触达 —— 完全不需要网络 | **Rust** | 是 | ✅ |
 | **s07** | [让它连上互联网](s07_networking/) | tap 设备是一根另一端为文件描述符的网线 —— 外加 NAT，以及谁才需要 root | **C** + shell | 是 | ✅ |
-| **s08** | 现在把它交给 agent | 一个 Python SDK，和一个住在你自建沙箱里的 coding agent | Python | 是 | 🚧 |
+| **s08** | [现在把它交给 agent](s08_sdk_and_agent/) | 八章的内容藏在四个方法后面，上面跑着一个二十行的 agent 循环 | **Python** | 是 | ✅ |
 
 **s00 只需要 Docker** —— 所有人都能完成第一章。
 

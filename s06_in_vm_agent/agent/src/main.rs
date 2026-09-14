@@ -91,6 +91,9 @@ fn install_busybox() {
         for d in ["/usr", "/usr/bin", "/usr/sbin", "/sbin"] {
             mkdir(cstr(d).as_ptr(), 0o755);
         }
+        // A machine without /tmp surprises everything that runs in it.
+        // The root is already a tmpfs, so this costs a directory entry.
+        mkdir(cstr("/tmp").as_ptr(), 0o1777);
     }
     let pid = unsafe { fork() };
     if pid == 0 {

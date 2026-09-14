@@ -143,6 +143,42 @@ jobs:
       - name: build an agent, ship it into a guest, run commands in it
         run: ./s06_in_vm_agent/demo.sh
 
+  s07:
+    name: s07 networking
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v5
+      - name: grant access to /dev/kvm
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' \
+            | sudo tee /etc/udev/rules.d/99-kvm-for-ci.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+      - name: fetch pinned assets
+        run: ./scripts/fetch-assets.sh
+      - name: a tap device, a microVM on it, and NAT out
+        run: ./s07_networking/demo.sh
+
+  s08:
+    name: s08 sdk and agent
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v5
+      - name: grant access to /dev/kvm
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' \
+            | sudo tee /etc/udev/rules.d/99-kvm-for-ci.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+      - name: fetch pinned assets
+        run: ./scripts/fetch-assets.sh
+      - name: build the guest agent
+        run: make -C s06_in_vm_agent all
+      - name: the SDK
+        run: cd s08_sdk_and_agent && python3 demo.py
+      - name: the agent loop
+        run: cd s08_sdk_and_agent && ANTHROPIC_API_KEY= python3 agent.py
+
   s01:
     name: s01 first microVM
     runs-on: ubuntu-24.04

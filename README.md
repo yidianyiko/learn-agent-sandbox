@@ -6,8 +6,8 @@
 
 [English](README.md) · [中文](README.zh.md)
 
-> ⚠️ **Status: early.** The design is settled and chapters are being written.
-> See the [chapter table](#chapters) for what is available today.
+> **All nine chapters are written, and CI runs every one of them on each push.**
+> Start at [s00](s00_shared_kernel/) — it needs only Docker.
 
 ---
 
@@ -64,7 +64,7 @@ Each chapter stands on its own. Stop wherever you have what you came for.
 | **s05** | [Fork the machine, not the process](s05_fork_parallel/) | Six 256 MiB VMs in 76 MB, because one `mmap` flag shares what they have not changed | **C** + shell | yes | ✅ |
 | **s06** | [Someone has to be inside](s06_in_vm_agent/) | A dependency-free Rust agent as PID 1, reached over vsock — no network at all | **Rust** | yes | ✅ |
 | **s07** | [Now let it reach the internet](s07_networking/) | A tap device is a wire whose far end is a file descriptor — plus NAT, and who needs root | **C** + shell | yes | ✅ |
-| **s08** | Now hand it to an agent | A Python SDK, and a coding agent living on your own sandbox | Python | yes | 🚧 |
+| **s08** | [Now hand it to an agent](s08_sdk_and_agent/) | Eight chapters behind four methods, and a twenty-line agent loop on top | **Python** | yes | ✅ |
 
 **s00 requires only Docker** — everyone can do chapter one.
 

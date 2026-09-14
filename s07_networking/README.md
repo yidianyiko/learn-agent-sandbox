@@ -2,7 +2,7 @@
 
 [English](README.md) · [中文](README.zh.md)
 
-[s00](../s00_shared_kernel/) → ... → [s05](../s05_fork_parallel/) → [s06](../s06_in_vm_agent/) → **s07** → s08
+[s00](../s00_shared_kernel/) → ... → [s05](../s05_fork_parallel/) → [s06](../s06_in_vm_agent/) → **s07** → [s08](../s08_sdk_and_agent/)
 
 > **Needs:** `/dev/kvm`, cargo, a C compiler, the fetched assets — and **sudo**, for the
 > first and only time in this repository.
@@ -214,5 +214,5 @@ Worth doing next:
 
 ---
 
-**Next:** s08 — *Now hand it to an agent* *(not yet written)*
+**Next:** [s08 — Now hand it to an agent](../s08_sdk_and_agent/)
 Every piece exists. The last chapter is a Python SDK and a coding agent that lives on it.

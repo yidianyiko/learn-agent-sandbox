@@ -2,7 +2,7 @@
 
 [English](README.md) · [中文](README.zh.md)
 
-[s00](../s00_shared_kernel/README.zh.md) → ... → [s05](../s05_fork_parallel/README.zh.md) → [s06](../s06_in_vm_agent/README.zh.md) → **s07** → s08
+[s00](../s00_shared_kernel/README.zh.md) → ... → [s05](../s05_fork_parallel/README.zh.md) → [s06](../s06_in_vm_agent/README.zh.md) → **s07** → [s08](../s08_sdk_and_agent/README.zh.md)
 
 > **需要：** `/dev/kvm`、cargo、C 编译器、已下载的资产——以及 **sudo**，
 > 这是整个仓库里第一次也是唯一一次。
@@ -198,5 +198,5 @@ make && ./demo.sh
 
 ---
 
-**下一章：** s08 — *现在把它交给 agent* *（尚未写完）*
+**下一章：** [s08 — 现在把它交给 agent](../s08_sdk_and_agent/README.zh.md)
 每一块零件都齐了。**最后一章是一个 Python SDK，和一个住在它上面的 coding agent。**
