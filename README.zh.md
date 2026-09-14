@@ -1,5 +1,7 @@
 # learn-agent-sandbox
 
+[![ci](https://github.com/yidianyiko/learn-agent-sandbox/actions/workflows/ci.yml/badge.svg)](https://github.com/yidianyiko/learn-agent-sandbox/actions/workflows/ci.yml)
+
 **亲手造出 AI agent 运行其中的那个沙箱 —— 从 `docker run` 一路到能在毫秒间 fork 的 microVM。**
 
 [English](README.md) · [中文](README.zh.md)

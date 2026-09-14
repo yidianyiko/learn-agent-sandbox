@@ -208,7 +208,7 @@ s0(N-1) → **s0N** → s0(N+1)
 2. **CI 跑每章真实代码**，而非单元测试
 3. **定时 CI（每周）** —— 无人改动时也能发现外部资源失效
 
-**待验证项**：GitHub 的 Ubuntu runner 据称支持 KVM（Android 模拟器 CI 依赖此能力），若成立则 s01+ 可在 CI 中运行。**须在 s01 落地时实测确认**。若不成立，退化方案为：s00 跑完整 CI，其余章节仅做静态检查 + 构建验证。
+**~~待验证项~~ → 已验证（2026-09-14）**：GitHub `ubuntu-24.04` runner 确实提供 `/dev/kvm` 与嵌套虚拟化，加一条放宽的 udev 规则后可真实启动 Firecracker microVM。三个 job（lint / s00 / s01）全部通过。退化方案不需要了。
 
 ---
 
@@ -268,7 +268,11 @@ s0(N-1) → **s0N** → s0(N+1)
 
 ## 14. 开放问题（实现时解决）
 
-1. GitHub Ubuntu runner 的 KVM 可用性 —— s01 落地时实测
+1. ~~GitHub Ubuntu runner 的 KVM 可用性~~ → **已验证可用（2026-09-14）**。
+   `ubuntu-24.04` runner 有 `/dev/kvm`（10:232）与嵌套虚拟化（`kvm_amd`），
+   加一条放宽的 udev 规则后 runner 用户即可访问，s01 的 measure.sh 在 CI 中真实启动成功。
+   实测数据：Ubuntu 2284 ms / initramfs 569 ms（本地 WSL2 为 2602 / 688 ms）。
+   **结论：全部章节可进 CI，无需退化方案。**
 2. 云主机退路的具体机型清单需实测确认
 3. s00 三个演示的具体实现形式（脚本 vs docker-compose）
 4. ~~Firecracker / kernel / rootfs 的具体钉定版本~~ → 已定，见下

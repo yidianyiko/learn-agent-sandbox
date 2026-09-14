@@ -193,6 +193,22 @@ An earlier draft of this chapter was titled *"A virtual machine in 125 ms."* We 
 2602 ms and changed the title, because a tutorial that prints a number you cannot
 reproduce has spent its credibility on nothing.
 
+
+### The same result on a second machine
+
+This chapter's CI boots the same VM on a GitHub Actions runner — Azure hardware, AMD
+EPYC, a different kernel — every push. Side by side:
+
+|  | WSL2 laptop (Intel) | GitHub runner (Azure, AMD) |
+|---|---|---|
+| Ubuntu, wall clock to shell | 2602 ms | 2284 ms |
+| Ubuntu, kernel hands off to init | 0.927 s | 0.852 s |
+| initramfs, wall clock to shell | 688 ms | 569 ms |
+
+Different vendor, different silicon, 12–18 % apart — and both nowhere near 125 ms. That
+is the point worth taking: the gap is not your machine being slow. It is a full kernel
+and a full userland doing real work, on every boot, forever.
+
 > ⚠️ **Do not trust in-guest timers under nested virtualisation.** The BusyBox initramfs
 > cheerfully announces `Boot took 540.30 seconds`. Its clock reference is wrong. Measure
 > from the host.

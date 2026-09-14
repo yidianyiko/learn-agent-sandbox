@@ -183,6 +183,22 @@ Firecracker 的 [NSDI '20 论文](https://www.usenix.org/conference/nsdi20/prese
 这一章的早期草稿标题是 *「125 毫秒里的一台虚拟机」*。我们实测 2602 毫秒，**于是改了
 标题**——一个印着你复现不出来的数字的教程，等于白白花掉了自己的可信度。
 
+
+### 换一台机器，结论一样
+
+这一章的 CI 每次 push 都会在 GitHub Actions runner 上启动同一台 VM —— Azure 硬件、
+AMD EPYC、不同的内核。并排看：
+
+| | WSL2 笔记本（Intel） | GitHub runner（Azure，AMD） |
+|---|---|---|
+| Ubuntu 墙钟到 shell | 2602 ms | 2284 ms |
+| Ubuntu 内核交棒 init | 0.927 s | 0.852 s |
+| initramfs 墙钟到 shell | 688 ms | 569 ms |
+
+不同厂商、不同芯片、相差 12–18%，而且**都远远够不到 125 毫秒**。这才是值得带走的一点：
+**这个差距不是你的机器慢**，而是一个完整的内核加一整套用户态在真的干活——每一次启动，
+永远如此。
+
 > ⚠️ **嵌套虚拟化下不要相信 guest 内部的计时器。** 那个 BusyBox initramfs 会兴高采烈地
 > 宣布 `Boot took 540.30 seconds`。它的时钟基准是错的。**要从宿主侧测。**
 
