@@ -16,15 +16,15 @@ ASSETS="$HERE/../assets"
 FC="$ASSETS/firecracker"
 KERNEL="$ASSETS/vmlinux-6.1.186"
 
-if [ -t 1 ] && [ -z "${NO_COLOR:-}" ]; then B=$'\033[1m'; D=$'\033[2m'; X=$'\033[0m'
-else B=''; D=''; X=''; fi
+if [ -t 1 ] && [ -z "${NO_COLOR:-}" ]; then B=$'\033[1m'; D=$'\033[2m'; R=$'\033[31m'; X=$'\033[0m'
+else B=''; D=''; R=''; X=''; fi
 
 [ -r /dev/kvm ] && [ -w /dev/kvm ] || { echo "cannot access /dev/kvm — see ../scripts/check-env.sh"; exit 1; }
 [ -f "$FC" ] || { echo "assets missing — run ../scripts/fetch-assets.sh"; exit 1; }
 
 # Boot once, return "wall_ms kernel_to_init_s log_path".
 boot_once() { # boot_source_json  ready_pattern  extra_api
-  local sock log pid t0 t1
+  local sock log pid t0 t1 matched
   sock="${TMPDIR:-/tmp}/fc-m-$$.sock"; log="${TMPDIR:-/tmp}/fc-m-$$.log"
   rm -f "$sock" "$log"
   "$FC" --api-sock "$sock" > "$log" 2>&1 &
@@ -39,17 +39,38 @@ boot_once() { # boot_source_json  ready_pattern  extra_api
 
   t0=$(date +%s%N)
   api /actions '{"action_type":"InstanceStart"}'
-  for _ in $(seq 1 4000); do grep -qE "$2" "$log" 2>/dev/null && break; sleep 0.002; done
+
+  # Wait for the guest to print the line that means "I am up". Record
+  # whether it ever did: without this flag a guest that never boots still
+  # falls out of the loop after ~8 s and we would report that as its boot
+  # time — a plausible-looking number that is entirely wrong, which is the
+  # worst thing a measurement script can produce.
+  matched=0
+  for _ in $(seq 1 4000); do
+    if grep -qE "$2" "$log" 2>/dev/null; then matched=1; break; fi
+    sleep 0.002
+  done
   t1=$(date +%s%N)
   kill $pid 2>/dev/null; wait $pid 2>/dev/null
   rm -f "$sock"          # the log is handed back to the caller; the socket is not
 
+  if [ "$matched" = 0 ]; then
+    printf '\n%sThe guest never printed %s, so there is no boot time to report.%s\n' "$R" "$2" "$X" >&2
+    printf '%sLast lines of its console:%s\n' "$D" "$X" >&2
+    tail -6 "$log" >&2
+    rm -f "$log"
+    exit 1
+  fi
+
   # These are set as globals rather than returned, because a shell function
   # can only return a status. The caller reads them immediately.
   WALL_MS=$(( (t1 - t0) / 1000000 ))
+  # An empty result here means the guest kernel did not log that line —
+  # print "n/a" rather than a blank column, which reads like a bug.
   TO_INIT=$(grep -oP '^\[\s*\K[0-9.]+(?=\].*(Run /sbin/init|Run /init))' "$log" | head -1)
   MOUNT_AT=$(grep -oP '^\[\s*\K[0-9.]+(?=\].*VFS: Mounted root)' "$log" | head -1)
   VIRTIO_AT=$(grep -oP '^\[\s*\K[0-9.]+(?=\].*virtio_blk virtio0:.*queues)' "$log" | head -1)
+  TO_INIT=${TO_INIT:-n/a}; MOUNT_AT=${MOUNT_AT:-n/a}; VIRTIO_AT=${VIRTIO_AT:-n/a}
   LOG_PATH="$log"
 }
 
@@ -96,6 +117,6 @@ ${B}What that means${X}
   seconds, because its clock reference is wrong.${X}
 
   You can shave this down. You cannot shave it to zero.
-  ${B}s02 stops trying, and restores from a snapshot instead.${X}
+  ${B}s03 stops trying, and restores from a snapshot instead.${X}
 
 TABLE
