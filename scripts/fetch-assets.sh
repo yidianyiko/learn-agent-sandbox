@@ -94,15 +94,28 @@ fetch "firecracker-${FC_VERSION}.tgz" \
       "${GH}/${FC_VERSION}/firecracker-${FC_VERSION}-x86_64.tgz" \
       "$SHA_FC_TGZ"
 
-if [ ! -x firecracker ]; then
-  tar xzf "firecracker-${FC_VERSION}.tgz"
-  # The tarball also carries jailer, the snapshot tools and the seccomp
-  # filter. We only need the VMM itself; the rest is left in place for
-  # anyone curious enough to look.
-  cp "release-${FC_VERSION}-x86_64/firecracker-${FC_VERSION}-x86_64" firecracker
-  chmod +x firecracker
-fi
-printf '  %s✔%s %-24s %s\n\n' "$G" "$X" "firecracker" "$(./firecracker --version 2>&1 | head -1)"
+# Always extract from the pinned tarball. An earlier version of this script
+# skipped extraction whenever a file named `firecracker` already existed,
+# which meant bumping FC_VERSION downloaded and verified the new tarball and
+# then left the old binary in place — every chapter would quietly run the
+# wrong VMM while the summary printed a tick beside it. The checksum
+# protects the tarball; nothing was protecting what came out of it.
+rm -rf "release-${FC_VERSION}-x86_64"
+tar xzf "firecracker-${FC_VERSION}.tgz"
+# The tarball also carries jailer, the snapshot tools and the seccomp
+# filter. We only need the VMM itself; the rest is left in place for
+# anyone curious enough to look.
+cp "release-${FC_VERSION}-x86_64/firecracker-${FC_VERSION}-x86_64" firecracker
+chmod +x firecracker
+
+# And confirm the binary we just installed is the one we pinned.
+FC_REPORTED="$(./firecracker --version 2>&1 | head -1)"
+case "$FC_REPORTED" in
+  *"$FC_VERSION"*) ;;
+  *) printf '  %s✘%s firecracker reports "%s", expected %s\n' "$R" "$X" "$FC_REPORTED" "$FC_VERSION"
+     exit 1 ;;
+esac
+printf '  %s✔%s %-24s %s\n\n' "$G" "$X" "firecracker" "$FC_REPORTED"
 
 printf '%sGuest kernel and filesystems%s\n' "$B" "$X"
 fetch "$KERNEL"    "${S3}/${CI_ARTIFACTS}/x86_64/${KERNEL}"    "$SHA_KERNEL"
