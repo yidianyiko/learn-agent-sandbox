@@ -2,7 +2,7 @@
 
 [English](README.md) · [中文](README.zh.md)
 
-[s00](../s00_shared_kernel/) → [s01](../s01_first_microvm/) → [s02](../s02_write_a_vmm/) → [s03](../s03_snapshot_restore/) → [s04](../s04_orchestrator/) → [s05](../s05_fork_parallel/) → **s06** → s07 → s08
+[s00](../s00_shared_kernel/) → [s01](../s01_first_microvm/) → [s02](../s02_write_a_vmm/) → [s03](../s03_snapshot_restore/) → [s04](../s04_orchestrator/) → [s05](../s05_fork_parallel/) → **s06** → [s07](../s07_networking/) → s08
 
 > **Needs:** `/dev/kvm`, cargo, the fetched assets. No root.
 > **Time:** about 40 minutes.
@@ -254,5 +254,5 @@ Worth doing next:
 
 ---
 
-**Next:** s07 — *Now let it reach the internet* *(not yet written)*
+**Next:** [s07 — Now let it reach the internet](../s07_networking/)
 The machine can take orders. It still cannot `pip install` anything.

@@ -118,3 +118,4 @@ s04_orchestrator/state/
 s05_fork_parallel/tinyfork
 s06_in_vm_agent/target/
 s06_in_vm_agent/initramfs.cpio
+s07_networking/tapwire

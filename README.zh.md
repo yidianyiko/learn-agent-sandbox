@@ -58,7 +58,7 @@ Agent 在运行时写代码，并立刻执行它。没有 review，没有部署�
 | **s04** | [控制面与数据面，永不混合](s04_orchestrator/) | 一个挨枪不死、并能重新认领自己启动过什么的登记处 | **Go** | 是 | ✅ |
 | **s05** | [fork 机器，而不是 fork 进程](s05_fork_parallel/) | 六台 256 MiB 的 VM 只占 76 MB —— 一个 `mmap` 标志位共享了它们没改过的一切 | **C** + shell | 是 | ✅ |
 | **s06** | [里面得有个人](s06_in_vm_agent/) | 零依赖 Rust agent 作为 PID 1，经 vsock 触达 —— 完全不需要网络 | **Rust** | 是 | ✅ |
-| **s07** | 让它连上互联网 | tap 设备、NAT、端口转发 | Go | 是 | 🚧 |
+| **s07** | [让它连上互联网](s07_networking/) | tap 设备是一根另一端为文件描述符的网线 —— 外加 NAT，以及谁才需要 root | **C** + shell | 是 | ✅ |
 | **s08** | 现在把它交给 agent | 一个 Python SDK，和一个住在你自建沙箱里的 coding agent | Python | 是 | 🚧 |
 
 **s00 只需要 Docker** —— 所有人都能完成第一章。

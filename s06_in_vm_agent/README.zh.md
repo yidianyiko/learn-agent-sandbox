@@ -2,7 +2,7 @@
 
 [English](README.md) · [中文](README.zh.md)
 
-[s00](../s00_shared_kernel/README.zh.md) → [s01](../s01_first_microvm/README.zh.md) → [s02](../s02_write_a_vmm/README.zh.md) → [s03](../s03_snapshot_restore/README.zh.md) → [s04](../s04_orchestrator/README.zh.md) → [s05](../s05_fork_parallel/README.zh.md) → **s06** → s07 → s08
+[s00](../s00_shared_kernel/README.zh.md) → [s01](../s01_first_microvm/README.zh.md) → [s02](../s02_write_a_vmm/README.zh.md) → [s03](../s03_snapshot_restore/README.zh.md) → [s04](../s04_orchestrator/README.zh.md) → [s05](../s05_fork_parallel/README.zh.md) → **s06** → [s07](../s07_networking/README.zh.md) → s08
 
 > **需要：** `/dev/kvm`、cargo、已下载的资产。不需要 root。
 > **耗时：** 约 40 分钟。
@@ -235,5 +235,5 @@ make && ./demo.sh
 
 ---
 
-**下一章：** s07 — *让它连上互联网* *（尚未写完）*
+**下一章：** [s07 — 让它连上互联网](../s07_networking/README.zh.md)
 机器已经能听命令了。**但它还装不了 `pip install`。**
