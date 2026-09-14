@@ -2,7 +2,7 @@
 
 [English](README.md) · [中文](README.zh.md)
 
-**s00** → [s01](../s01_first_microvm/) → s02 → ... → s07
+**s00** → s01 → s02 → ... → s07
 
 > **Needs:** Docker only. No KVM, no root.
 > **Time:** about 10 minutes.
@@ -166,5 +166,8 @@ nothing is written. Takes under a minute on a warm cache.
 
 ---
 
-**Next:** [s01 — A virtual machine in 125 ms](../s01_first_microvm/).
+**Next:** s01 — A virtual machine in 125 ms *(not yet written)*.
 A machine with a kernel of its very own, started by hand.
+
+Before you go: the briefing on [`/dev/kvm`](../notes/kvm-device.md), the device every
+chapter from here on depends on.

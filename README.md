@@ -69,6 +69,16 @@ product on the market suddenly legible.
 
 ---
 
+## Briefings
+
+Background that would bloat a chapter lives in [`notes/`](notes/) — read when you want it,
+skip when you don't.
+
+- [`/dev/kvm`](notes/kvm-device.md) — the device every chapter from s01 onward depends on:
+  what it does, why it needs a group, what that group costs you, and how to get it.
+
+---
+
 ## Why the languages change
 
 The layer decides the language. That pattern holds across the industry, and walking the
