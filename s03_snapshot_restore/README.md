@@ -2,7 +2,7 @@
 
 [English](README.md) · [中文](README.zh.md)
 
-[s00](../s00_shared_kernel/) → [s01](../s01_first_microvm/) → [s02](../s02_write_a_vmm/) → **s03** → s04 → ... → s08
+[s00](../s00_shared_kernel/) → [s01](../s01_first_microvm/) → [s02](../s02_write_a_vmm/) → **s03** → [s04](../s04_orchestrator/) → ... → s08
 
 > **Needs:** `/dev/kvm`, a C compiler, `make`, and the fetched assets.
 > **Time:** about 30 minutes.
@@ -279,5 +279,5 @@ Worth doing next:
 
 ---
 
-**Next:** s04 — *Control plane, data plane, never mixed* *(not yet written)*
+**Next:** [s04 — Control plane, data plane, never mixed](../s04_orchestrator/)
 One VM is a demo. The moment you want a second one, something has to keep track.

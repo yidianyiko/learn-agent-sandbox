@@ -2,7 +2,7 @@
 
 [English](README.md) · [中文](README.zh.md)
 
-[s00](../s00_shared_kernel/README.zh.md) → [s01](../s01_first_microvm/README.zh.md) → [s02](../s02_write_a_vmm/README.zh.md) → **s03** → s04 → ... → s08
+[s00](../s00_shared_kernel/README.zh.md) → [s01](../s01_first_microvm/README.zh.md) → [s02](../s02_write_a_vmm/README.zh.md) → **s03** → [s04](../s04_orchestrator/README.zh.md) → ... → s08
 
 > **需要：** `/dev/kvm`、C 编译器、`make`，以及已下载的资产。
 > **耗时：** 约 30 分钟。
@@ -258,5 +258,5 @@ make            # 编译 tinysnap
 
 ---
 
-**下一章：** s04 — *控制面与数据面，永不混合* *（尚未写完）*
+**下一章：** [s04 — 控制面与数据面，永不混合](../s04_orchestrator/README.zh.md)
 一台虚拟机是个演示。当你想要第二台的那一刻，就必须有东西来记账了。

@@ -107,3 +107,7 @@ s02_write_a_vmm/tinyvmm
 s03_snapshot_restore/tinysnap
 s03_snapshot_restore/snapshot.mem
 s03_snapshot_restore/snapshot.cpu
+
+# s04 build output and runtime state
+s04_orchestrator/sandboxd
+s04_orchestrator/state/
