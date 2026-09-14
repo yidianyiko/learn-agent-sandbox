@@ -28,6 +28,7 @@ have() { command -v "$1" >/dev/null 2>&1; }
 
 # ---------- state ----------
 HAS_DOCKER=0; HAS_KVM=0; HAS_GO=0; HAS_RUST=0; HAS_PY=0; HAS_CURL=0; HAS_IP=0
+HAS_CC=0; HAS_MAKE=0
 FIXES=()
 
 printf '%slearn-agent-sandbox — environment check%s\n' "$B" "$X"
@@ -117,15 +118,22 @@ done
 # ---------- toolchains ----------
 head_ "Toolchains"
 have curl    && { HAS_CURL=1; ok "curl      $(curl --version 2>/dev/null | head -1 | cut -d' ' -f1-2)"; } \
-             || { bad "curl not found  (s01, s02)"; FIXES+=("Install curl."); }
+             || { bad "curl not found  (s01, s03)"; FIXES+=("Install curl."); }
+if have cc || have gcc || have clang; then
+  HAS_CC=1; ok "cc        $( { cc --version || gcc --version; } 2>/dev/null | head -1 | cut -c1-40)"
+else
+  warn "no C compiler  (s02)"; FIXES+=("Install a C compiler (e.g. 'sudo apt install build-essential').")
+fi
+have make    && { HAS_MAKE=1; ok "make      $(make --version 2>/dev/null | head -1 | cut -d' ' -f3)"; } \
+             || { warn "make not found  (s02)"; FIXES+=("Install make."); }
 have go      && { HAS_GO=1;   ok "go        $(go version 2>/dev/null | cut -d' ' -f3)"; } \
-             || { warn "go not found  (s03, s04, s06)"; FIXES+=("Install Go: https://go.dev/dl/"); }
+             || { warn "go not found  (s04, s05, s07)"; FIXES+=("Install Go: https://go.dev/dl/"); }
 have cargo   && { HAS_RUST=1; ok "rust      $(cargo --version 2>/dev/null | cut -d' ' -f2)"; } \
-             || { warn "cargo not found  (s05)"; FIXES+=("Install Rust: https://rustup.rs"); }
+             || { warn "cargo not found  (s06)"; FIXES+=("Install Rust: https://rustup.rs"); }
 have python3 && { HAS_PY=1;   ok "python3   $(python3 --version 2>/dev/null | cut -d' ' -f2)"; } \
-             || { warn "python3 not found  (s07)"; FIXES+=("Install Python 3.10+."); }
+             || { warn "python3 not found  (s08)"; FIXES+=("Install Python 3.10+."); }
 have ip      && { HAS_IP=1;   ok "iproute2  (ip)"; } \
-             || { warn "'ip' not found  (s06)"; FIXES+=("Install iproute2."); }
+             || { warn "'ip' not found  (s07)"; FIXES+=("Install iproute2."); }
 
 # ---------- verdict ----------
 head_ "Chapter readiness"
@@ -133,14 +141,17 @@ row() { # name, ready(0/1), missing-text
   if [ "$2" = "1" ]; then printf '  %s✔%s  %-26s ready\n' "$G" "$X" "$1"
   else printf '  %s—%s  %-26s needs %s\n' "$Y" "$X" "$1" "$3"; fi
 }
+# Keep this list in step with the chapter table in README.md. It went stale
+# once already, when a chapter was inserted and only the prose was updated.
 row "s00  shared kernel"      "$HAS_DOCKER" "docker"
 row "s01  first microVM"      "$(( HAS_KVM && HAS_CURL ))" "kvm + curl"
-row "s02  snapshot / restore" "$(( HAS_KVM && HAS_CURL ))" "kvm + curl"
-row "s03  orchestrator"       "$(( HAS_KVM && HAS_GO ))"   "kvm + go"
-row "s04  fork / parallel"    "$(( HAS_KVM && HAS_GO ))"   "kvm + go"
-row "s05  in-VM agent"        "$(( HAS_KVM && HAS_RUST ))" "kvm + rust"
-row "s06  networking"         "$(( HAS_KVM && HAS_GO && HAS_IP ))" "kvm + go + iproute2"
-row "s07  sdk and agent"      "$(( HAS_KVM && HAS_PY ))"   "kvm + python3"
+row "s02  write a vmm"        "$(( HAS_KVM && HAS_CC && HAS_MAKE ))" "kvm + cc + make"
+row "s03  snapshot / restore" "$(( HAS_KVM && HAS_CURL ))" "kvm + curl"
+row "s04  orchestrator"       "$(( HAS_KVM && HAS_GO ))"   "kvm + go"
+row "s05  fork / parallel"    "$(( HAS_KVM && HAS_GO ))"   "kvm + go"
+row "s06  in-VM agent"        "$(( HAS_KVM && HAS_RUST ))" "kvm + rust"
+row "s07  networking"         "$(( HAS_KVM && HAS_GO && HAS_IP ))" "kvm + go + iproute2"
+row "s08  sdk and agent"      "$(( HAS_KVM && HAS_PY ))"   "kvm + python3"
 
 if [ ${#FIXES[@]} -gt 0 ]; then
   head_ "To go further"
