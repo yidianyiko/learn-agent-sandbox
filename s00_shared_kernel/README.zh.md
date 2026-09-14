@@ -57,7 +57,7 @@ Alpine 用的是 musl libc + BusyBox，Debian 用的是 glibc + GNU coreutils，
 ```
 Alpine Linux 3.20          6.18.33.2-microsoft-standard-WSL2
 Debian 12                  6.18.33.2-microsoft-standard-WSL2
-宿主 (Ubuntu 24.04)        6.18.33.2-microsoft-standard-WSL2
+宿主 (Ubuntu 24.04.4 LTS)  6.18.33.2-microsoft-standard-WSL2
 ```
 
 一模一样——连 `microsoft-standard-WSL2` 这个后缀都一样，而 Alpine 显然从没发布过这种内核。

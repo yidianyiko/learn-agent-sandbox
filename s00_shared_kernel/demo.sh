@@ -28,7 +28,16 @@ command -v docker >/dev/null 2>&1 || { echo "docker not found — see ../scripts
 docker info >/dev/null 2>&1     || { echo "docker daemon unreachable — see ../scripts/check-env.sh"; exit 1; }
 
 printf '%sPulling pinned images...%s\n' "$D" "$X"
-docker pull -q "$ALPINE" >/dev/null && docker pull -q "$DEBIAN" >/dev/null
+for img in "$ALPINE" "$DEBIAN"; do
+  docker pull -q "$img" >/dev/null || { echo "could not pull $img — check your network"; exit 1; }
+done
+
+# Name the host by its distribution, not by `uname -s`. The whole point of
+# demo 1 is to line up three DISTRIBUTIONS against one KERNEL, and a row
+# reading "host (Linux)" next to "Alpine Linux 3.20" breaks the comparison.
+HOST_DISTRO=""
+[ -r /etc/os-release ] && HOST_DISTRO=$(grep -m1 '^PRETTY_NAME=' /etc/os-release | cut -d'"' -f2)
+HOST_DISTRO=${HOST_DISTRO:-$(uname -s)}
 
 # ---------------------------------------------------------------------
 say "1 · Three distributions, one kernel"
@@ -37,7 +46,7 @@ note "   Their userlands share nothing. Watch the kernel line."
 echo
 printf '   %-26s %s\n' "Alpine Linux 3.20" "$(docker run --rm "$ALPINE" uname -r)"
 printf '   %-26s %s\n' "Debian 12" "$(docker run --rm "$DEBIAN" uname -r)"
-printf '   %-26s %s%s%s\n' "host ($(uname -s))" "$G" "$(uname -r)" "$X"
+printf '   %-26s %s%s%s\n' "host ($HOST_DISTRO)" "$G" "$(uname -r)" "$X"
 echo
 note "   A Linux distribution is userland files plus a kernel."
 note "   An image contains NO kernel. Docker swaps the files, not the engine."

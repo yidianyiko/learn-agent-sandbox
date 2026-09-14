@@ -59,7 +59,7 @@ essentially no userland code. Ask each one what kernel it is running on:
 ```
 Alpine Linux 3.20          6.18.33.2-microsoft-standard-WSL2
 Debian 12                  6.18.33.2-microsoft-standard-WSL2
-host (Ubuntu 24.04)        6.18.33.2-microsoft-standard-WSL2
+host (Ubuntu 24.04.4 LTS)  6.18.33.2-microsoft-standard-WSL2
 ```
 
 Identical — down to the `microsoft-standard-WSL2` suffix, which Alpine has obviously
