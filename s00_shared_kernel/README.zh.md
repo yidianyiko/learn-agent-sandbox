@@ -2,7 +2,7 @@
 
 [English](README.md) · [中文](README.zh.md)
 
-**s00** → [s01](../s01_first_microvm/README.zh.md) → s02 → ... → s07
+**s00** → [s01](../s01_first_microvm/README.zh.md) → [s02](../s02_write_a_vmm/README.zh.md) → ... → s08
 
 > **需要：** 只要 Docker。不需要 KVM，不需要 root。
 > **耗时：** 约 10 分钟。

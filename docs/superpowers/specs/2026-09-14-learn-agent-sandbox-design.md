@@ -74,16 +74,43 @@
 
 ## 5. 章节大纲
 
+### 变更记录：2026-09-14 插入 s02，章节由 8 章变 9 章
+
+**触发**：用户指出 s01 「直接用的现成工具，没有把底层剖析出来」。批评成立——s01 教的是
+「怎么调 Firecracker 的 API」，而 `/dev/kvm` 简报里描述的四个 ioctl，读者只是**被告知**，
+从未亲手执行。对一个 `learn-` 项目，这是核心缺口。
+
+**验证**：先写原型确认可行性，不靠估计。最小 KVM VMM 实测 **79 行纯代码**（原型 60 行），
+能运行 guest 机器码、处理 VM exit、完成宿主↔guest 寄存器往返。
+
+**决策**：新增 `s02_write_a_vmm`，用 **C**（KVM 的 ABI 本身就是 C ABI，每个 ioctl 一一对应；
+Rust 的 `kvm-ioctls` 只是它的封装，会削弱「看见赤裸机制」这个唯一价值）。
+
+**位置在 s01 之后而非之前**：先让读者拿到一台能跑的机器（动机），再掀开看机制。
+对零系统背景受众，自顶向下优于自底向上；且 s01 刚接住 s00 的收尾，那条弧线不应被打断。
+
+**与「不重写 Firecracker」的红线不冲突，反而是其论据**：实测 Firecracker v1.17.0 共
+**120,626 行 Rust**（此前 spec 中「约 5 万行」的估计偏低），其中 `devices/` 占 40,306 行
+（33%）为设备模拟，而对应 tinyvmm 职责的 `vstate/` 仅 6,333 行。最锋利的一组对照是
+读者的 3 行 `case KVM_EXIT_IO` 对应 Firecracker 的 `legacy/serial.rs` **592 行**。
+结论：虚拟化本身很小，其余是设备模拟与安全加固——**是工程量不是认知量**，
+正是不该重写的理由。
+
+**语言方案随之更新**：C 加入，位于「裸 KVM ABI」层。总计 shell → curl → **C** → Go →
+Rust → Python，仍严格遵守「每种语言出现在它真实所处的层」且无重复实现。
+
+
 | # | 目录 | motto | 语言 | 环境 | 读者产出 |
 |---|---|---|---|---|---|
-| s00 | `s00_shared_kernel` | *Your container is not a sandbox* | Docker | **仅 Docker** | 亲眼看到容器与宿主共享内核的证据 |
-| s01 | `s01_first_microvm` | *A kernel of its very own* | shell + curl | `/dev/kvm` | 跑起第一个 Firecracker VM，并拆解启动时间去了哪 |
-| s02 | `s02_snapshot_restore` | ***Don't boot. Restore.*** | shell + curl | `/dev/kvm` | 冷启动 vs 快照恢复的对比数字 |
-| s03 | `s03_orchestrator` | *Control plane, data plane, never mixed* | Go | `/dev/kvm` | 能起停沙箱的 HTTP 服务 |
-| s04 | `s04_fork_parallel` | *Fork the machine, not the process* | Go | `/dev/kvm` | 从一个快照 fork 出 N 个沙箱并行跑 |
-| s05 | `s05_in_vm_agent` | *Someone has to be inside* | Rust | `/dev/kvm` | VM 内静态二进制 agent，可从宿主 exec 进去 |
-| s06 | `s06_networking` | *Now let it reach the internet* | Go + shell | `/dev/kvm` | tap / NAT / 端口转发，VM 能联网并暴露服务 |
-| s07 | `s07_sdk_and_agent` | *Now hand it to an agent* | Python | `/dev/kvm` | Python SDK + 手搓 coding agent 跑在自建沙箱上 |
+| s00 | `s00_shared_kernel` | *Your container is not a sandbox* | Docker | **仅 Docker** | 容器与宿主共享内核的证据 |
+| s01 | `s01_first_microvm` | *A kernel of its very own* | shell + curl | `/dev/kvm` | 跑起第一个 Firecracker VM，拆解启动时间 |
+| s02 | `s02_write_a_vmm` | *There is no device. There is a switch statement.* | **C** | `/dev/kvm` | 79 行能跑的 VMM；实测 Firecracker 那 12 万行在干什么 |
+| s03 | `s03_snapshot_restore` | ***Don't boot. Restore.*** | shell + curl | `/dev/kvm` | 冷启动 vs 快照恢复的对比数字 |
+| s04 | `s04_orchestrator` | *Control plane, data plane, never mixed* | Go | `/dev/kvm` | 能起停沙箱的 HTTP 服务 |
+| s05 | `s05_fork_parallel` | *Fork the machine, not the process* | Go | `/dev/kvm` | 从一个快照 fork 出 N 个沙箱 |
+| s06 | `s06_in_vm_agent` | *Someone has to be inside* | Rust | `/dev/kvm` | VM 内静态二进制 agent |
+| s07 | `s07_networking` | *Now let it reach the internet* | Go + shell | `/dev/kvm` | tap / NAT / 端口转发 |
+| s08 | `s08_sdk_and_agent` | *Now hand it to an agent* | Python | `/dev/kvm` | Python SDK + 手搓 coding agent |
 
 ### 排序依据
 

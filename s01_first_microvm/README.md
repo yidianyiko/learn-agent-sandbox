@@ -2,7 +2,7 @@
 
 [English](README.md) · [中文](README.zh.md)
 
-[s00](../s00_shared_kernel/) → **s01** → s02 → ... → s07
+[s00](../s00_shared_kernel/) → **s01** → [s02](../s02_write_a_vmm/) → ... → s08
 
 > **Needs:** `/dev/kvm`, x86_64 Linux. No root. See [`../scripts/check-env.sh`](../scripts/check-env.sh).
 > **Time:** about 20 minutes.
@@ -53,7 +53,7 @@ it, resume it, fork it. All of that needs a channel that stays open after boot, 
 Firecracker makes that channel the *only* interface and has no second way to do things.
 
 It pays off twice more later: the API is formally specified (the release tarball ships
-`firecracker_spec-v1.17.0.yaml`, an OpenAPI document), and in [s03](../) your orchestrator
+`firecracker_spec-v1.17.0.yaml`, an OpenAPI document), and in s04 your orchestrator
 will drive exactly these endpoints over exactly this socket.
 
 ---
@@ -216,7 +216,7 @@ and a full userland doing real work, on every boot, forever.
 You can shave this down — trim the kernel, drop systemd, use a faster filesystem. You
 cannot shave it to zero, because a kernel has to discover its hardware every single time.
 
-**[s02](../) stops trying, and restores from a snapshot instead.**
+**s03 stops trying, and restores from a snapshot instead.**
 
 ---
 
@@ -257,4 +257,5 @@ cannot shave it to zero, because a kernel has to discover its hardware every sin
 
 ---
 
-**Next:** s02 — *Don't boot. Restore.* *(not yet written)*
+**Next:** [s02 — Write the hypervisor yourself](../s02_write_a_vmm/).
+You called four endpoints. Now write what answered them.

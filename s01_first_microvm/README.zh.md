@@ -2,7 +2,7 @@
 
 [English](README.md) · [中文](README.zh.md)
 
-[s00](../s00_shared_kernel/README.zh.md) → **s01** → s02 → ... → s07
+[s00](../s00_shared_kernel/README.zh.md) → **s01** → [s02](../s02_write_a_vmm/README.zh.md) → ... → s08
 
 > **需要：** `/dev/kvm`、x86_64 Linux。不需要 root。见 [`../scripts/check-env.sh`](../scripts/check-env.sh)。
 > **耗时：** 约 20 分钟。
@@ -51,7 +51,7 @@ Firecracker。约 3.5 MB，静态链接，零依赖——而且不太寻常的�
 Firecracker 索性把这个通道当成唯一接口，不提供第二种做事方式。
 
 这个选择后面还会兑现两次：API 有正式规范（发布包里的 `firecracker_spec-v1.17.0.yaml`
-是一份 OpenAPI 文档），而 [s03](../) 里你写的编排器，驱动的就是这些端点、这个 socket。
+是一份 OpenAPI 文档），而 s04 里你写的编排器，驱动的就是这些端点、这个 socket。
 
 ---
 
@@ -205,7 +205,7 @@ AMD EPYC、不同的内核。并排看：
 这个时间可以往下压——裁内核、去掉 systemd、换更快的文件系统。但**压不到零**，因为内核
 每一次都得重新发现一遍自己的硬件。
 
-**[s02](../) 不再尝试压缩它，而是直接从快照恢复。**
+**s03 不再尝试压缩它，而是直接从快照恢复。**
 
 ---
 
@@ -241,4 +241,5 @@ AMD EPYC、不同的内核。并排看：
 
 ---
 
-**下一章：** s02 — *别启动，恢复。* *（尚未写完）*
+**下一章：** [s02 — 自己写一个 hypervisor](../s02_write_a_vmm/README.zh.md)。
+你调了四个接口。现在把接它们的那个东西写出来。

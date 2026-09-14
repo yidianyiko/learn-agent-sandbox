@@ -2,7 +2,7 @@
 
 [English](README.md) · [中文](README.zh.md)
 
-**s00** → [s01](../s01_first_microvm/) → s02 → ... → s07
+**s00** → [s01](../s01_first_microvm/) → [s02](../s02_write_a_vmm/) → ... → s08
 
 > **Needs:** Docker only. No KVM, no root.
 > **Time:** about 10 minutes.

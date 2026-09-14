@@ -36,7 +36,7 @@ runs a real agent inside.
 ## What you will build
 
 ```
-  s00              s01 ─ s02          s03 ─ s04 ─ s05 ─ s06        s07
+  s00           s01 ─ s02 ─ s03        s04 ─ s05 ─ s06 ─ s07        s08
   ┌────────┐      ┌────────────┐     ┌──────────────────────┐    ┌────────┐
   │ Docker │  ──▶ │ Firecracker│ ──▶ │  your orchestrator   │──▶ │ agent  │
   │  the   │      │  microVM   │     │  fork · exec · net   │    │  runs  │
@@ -58,57 +58,13 @@ Each chapter stands on its own. Stop wherever you have what you came for.
 |---|---------|--------------------|------|:---------:|:------:|
 | **s00** | [Your container is not a sandbox](s00_shared_kernel/) | Direct evidence that your container shares the host kernel | shell | **no** | ✅ |
 | **s01** | [A kernel of its very own](s01_first_microvm/) | A real Firecracker microVM booted by hand — and where its boot time actually goes | curl | yes | ✅ |
-| **s02** | **Don't boot. Restore.** | The two numbers: cold boot vs. snapshot restore | curl | yes | 🚧 |
-| **s03** | Control plane, data plane, never mixed | An HTTP service that starts and stops sandboxes | Go | yes | 🚧 |
-| **s04** | Fork the machine, not the process | N sandboxes forked from one snapshot, running in parallel | Go | yes | 🚧 |
-| **s05** | Someone has to be inside | A tiny static binary in the guest you can `exec` into | Rust | yes | 🚧 |
-| **s06** | Now let it reach the internet | tap devices, NAT, port forwarding | Go | yes | 🚧 |
-| **s07** | Now hand it to an agent | A Python SDK, and a coding agent living on your own sandbox | Python | yes | 🚧 |
-
-**s02 is the one to read** if you only read one. Snapshot restore is why a sandbox can
-start in milliseconds instead of seconds, and understanding it makes every agent-sandbox
-product on the market suddenly legible.
-
----
-
-## Briefings
-
-Background that would bloat a chapter lives in [`notes/`](notes/) — read when you want it,
-skip when you don't.
-
-- [`/dev/kvm`](notes/kvm-device.md) — the device every chapter from s01 onward depends on:
-  what it does, why it needs a group, what that group costs you, and how to get it.
-
----
-
-## Why the languages change
-
-The layer decides the language. That pattern holds across the industry, and walking the
-whole stack is the only way to feel *why*:
-
-| Layer | Here | What this layer is written in |
-|-------|------|-------------------------------|
-| The VMM — used here, not built | — | **Rust** · Firecracker, Cloud Hypervisor, crosvm |
-| Orchestration / control plane | **Go** | **Go** · Kubernetes, containerd, Nomad, gVisor |
-| In-guest agent | **Rust** | both are common in real systems; s05 argues the trade-off |
-| SDK | **Python** | **Python / TypeScript** · near-universally |
-
-Safety-critical layers that cannot afford a GC pause went to Rust. Network services with
-heavy concurrency went to Go. The layer humans touch went to Python. By the end you will
-be able to explain that split from experience instead of hearsay.
-
----
-
-## Requirements
-
-Firecracker needs hardware virtualization. This is the honest matrix:
-
-| Environment | Works | Note |
-|-------------|:-----:|------|
-| Linux, bare metal or VM with nested virt | ✅ | the reference setup |
-| WSL2 on Windows 11 | ✅ | nested virtualization must be enabled |
-| macOS (Intel or Apple Silicon) | ❌ | no `/dev/kvm`; use a Linux cloud host |
-| GitHub Codespaces / most CI | ❌ | nested virtualization generally unavailable |
+| **s02** | [Write the hypervisor yourself](s02_write_a_vmm/) | A working VMM in 79 lines, and a measured answer to what the other 120,000 do | **C** | yes | ✅ |
+| **s03** | **Don't boot. Restore.** | The two numbers: cold boot vs. snapshot restore | curl | yes | 🚧 |
+| **s04** | Control plane, data plane, never mixed | An HTTP service that starts and stops sandboxes | Go | yes | 🚧 |
+| **s05** | Fork the machine, not the process | N sandboxes forked from one snapshot, running in parallel | Go | yes | 🚧 |
+| **s06** | Someone has to be inside | A tiny static binary in the guest you can `exec` into | Rust | yes | 🚧 |
+| **s07** | Now let it reach the internet | tap devices, NAT, port forwarding | Go | yes | 🚧 |
+| **s08** | Now hand it to an agent | A Python SDK, and a coding agent living on your own sandbox | Python | yes | 🚧 |
 
 **s00 requires only Docker** — everyone can do chapter one.
 

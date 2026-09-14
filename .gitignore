@@ -101,3 +101,6 @@ Thumbs.db
 # -------------------------------------------------------------
 tmp/
 scratch/
+
+# s02 build output
+s02_write_a_vmm/tinyvmm

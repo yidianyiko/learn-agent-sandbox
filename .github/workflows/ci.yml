@@ -40,6 +40,23 @@ jobs:
       - name: run the chapter
         run: ./s00_shared_kernel/demo.sh
 
+  s02:
+    name: s02 write a vmm
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v5
+      - name: grant access to /dev/kvm
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' \
+            | sudo tee /etc/udev/rules.d/99-kvm-for-ci.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+      - name: build and run the 79-line VMM
+        run: |
+          cd s02_write_a_vmm
+          make
+          ./tinyvmm
+
   s01:
     name: s01 first microVM
     runs-on: ubuntu-24.04
