@@ -71,16 +71,19 @@ product on the market suddenly legible.
 
 ## Why the languages change
 
-Each layer uses the language that layer actually uses in production:
+The layer decides the language. That pattern holds across the industry, and walking the
+whole stack is the only way to feel *why*:
 
-| Layer | Here | In the wild |
-|-------|------|-------------|
-| Orchestration / control plane | **Go** | E2B `packages/orchestrator`, containerd, Kubernetes, gVisor |
-| In-guest agent | **Rust** | E2B's `envd` is Go — we pick Rust on purpose, and s05 explains the trade-off |
-| SDK | **Python** | E2B's SDKs, and essentially all of them |
-| The VMM itself (not built here) | — | Firecracker, Cloud Hypervisor, crosvm — all Rust |
+| Layer | Here | What this layer is written in |
+|-------|------|-------------------------------|
+| The VMM — used here, not built | — | **Rust** · Firecracker, Cloud Hypervisor, crosvm |
+| Orchestration / control plane | **Go** | **Go** · Kubernetes, containerd, Nomad, gVisor |
+| In-guest agent | **Rust** | both are common in real systems; s05 argues the trade-off |
+| SDK | **Python** | **Python / TypeScript** · near-universally |
 
-Walking the whole stack is the only way to learn *why* the industry splits it this way.
+Safety-critical layers that cannot afford a GC pause went to Rust. Network services with
+heavy concurrency went to Go. The layer humans touch went to Python. By the end you will
+be able to explain that split from experience instead of hearsay.
 
 ---
 
@@ -109,10 +112,10 @@ It tells you how far up the ladder your machine can go, and what to install for 
 
 ---
 
-## What this is not
+## What is deliberately left out
 
-This is a **teaching repository**. It is deliberately missing everything that would
-make it a product:
+Some things are missing here not because they are hard, but because they are **volume,
+not insight** — they would cost ten times the effort and teach nothing new:
 
 - multi-tenancy and authorization
 - billing, quotas, rate limiting
@@ -120,15 +123,14 @@ make it a product:
 - a web UI
 - production hardening, auditing, monitoring
 - a template build system
-- performance tuned beyond "you can see why it's fast"
 
-Each chapter's code stays under 300 lines, because code you can read in one sitting is
-the only code that teaches.
+**Every chapter's code stays under 300 lines.** Code you can read in one sitting is the
+only code that teaches — code you cannot finish reading can only be trusted, never
+understood.
 
-**When you outgrow this repo, go use [E2B](https://e2b.dev) — or fork
-[`e2b-dev/runtime`](https://github.com/e2b-dev/runtime), which is Apache-2.0 and is the
-production system this repo is a scale model of.** Every chapter ends by pointing at the
-file in that codebase where the real version lives.
+What you get instead is a sandbox that actually runs, and enough judgement to read,
+evaluate, or build a production one. Each chapter closes by pointing at where that same
+piece lives in a real production codebase, so the toy and the real thing stay connected.
 
 ---
 
