@@ -46,13 +46,11 @@ spawn() { # sock log fifo  -> sets PID and opens fd 3 for writing
   "$FC" --api-sock "$1" < "$3" > "$2" 2>&1 &
   PID=$!
   exec 3> "$3"
-  local i
-  for i in $(seq 1 400); do [ -S "$1" ] && break; sleep 0.005; done
+  for _ in $(seq 1 400); do [ -S "$1" ] && break; sleep 0.005; done
 }
 
 wait_for() { # log pattern timeout_units -> 0 ok, 1 timed out
-  local i
-  for i in $(seq 1 "$3"); do grep -q "$2" "$1" 2>/dev/null && return 0; sleep 0.005; done
+  for _ in $(seq 1 "$3"); do grep -q "$2" "$1" 2>/dev/null && return 0; sleep 0.005; done
   return 1
 }
 
