@@ -33,7 +33,10 @@ cleanup() {
 }
 trap cleanup EXIT
 
-go build -o "$BIN" . || exit 1
+# Build from the script's own directory, not the caller's. `go build .`
+# resolves against the working directory, so invoking this script from the
+# repo root would look for a go.mod that is not there.
+( cd "$HERE" && go build -o "$BIN" . ) || exit 1
 
 start_control_plane() { # -> sets CP
   "$BIN" -addr "$ADDR" -state "$STATE" -assets "$HERE/../assets" > "$STATE/cp.log" 2>&1 &
