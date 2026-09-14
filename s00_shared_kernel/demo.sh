@@ -45,13 +45,23 @@ note "   An image contains NO kernel. Docker swaps the files, not the engine."
 # ---------------------------------------------------------------------
 say "2 · The container cannot see its own limits"
 LIMIT_MB=128
+# The cgroup limit lives at a different path on v2 and v1. Reading only the
+# v2 path silently reports 0 on a v1 host, which would contradict the prose
+# on this very page — so try both.
 OUT=$(docker run --rm -m "${LIMIT_MB}m" "$ALPINE" sh -c '
-  echo "$(free -m | awk "NR==2{print \$2}")|$(cat /sys/fs/cgroup/memory.max 2>/dev/null || echo 0)|$(nproc)"')
+  lim=$(cat /sys/fs/cgroup/memory.max 2>/dev/null \
+     || cat /sys/fs/cgroup/memory/memory.limit_in_bytes 2>/dev/null \
+     || echo unknown)
+  echo "$(free -m | awk "NR==2{print \$2}")|$lim|$(nproc)"')
 SEEN_MB=${OUT%%|*};  REST=${OUT#*|}
 CG_BYTES=${REST%%|*}; CG_CPUS=${REST##*|}
 echo
 printf '   %-34s %s MB\n' "limit we imposed (cgroup)" "$LIMIT_MB"
-printf '   %-34s %s MB   %s<- enforced%s\n' "what the cgroup file says" "$((CG_BYTES/1024/1024))" "$D" "$X"
+if [ "$CG_BYTES" = "unknown" ]; then
+  printf '   %-34s %s(cgroup path not found on this host)%s\n' "what the cgroup file says" "$D" "$X"
+else
+  printf '   %-34s %s MB   %s<- enforced%s\n' "what the cgroup file says" "$((CG_BYTES/1024/1024))" "$D" "$X"
+fi
 printf '   %-34s %s%s MB%s  <- what the app sees\n' "what \`free\` reports" "$Y" "$SEEN_MB" "$X"
 printf '   %-34s %s MB\n' "actual host memory" "$(free -m | awk 'NR==2{print $2}')"
 printf '   %-34s %s   (host has %s)\n' "CPUs via nproc" "$CG_CPUS" "$(nproc)"

@@ -33,6 +33,10 @@ for f in "$FC" "$KERNEL" "$ROOTFS"; do
 done
 [ -r /dev/kvm ] && [ -w /dev/kvm ] || die "cannot access /dev/kvm — run ../scripts/check-env.sh"
 
+# NOTE: do not exec firecracker below. exec replaces this shell's process
+# image, which discards the EXIT trap along with it, and every run then
+# leaves its socket behind in /tmp. Running it as a child keeps the trap
+# and still hands it the terminal, because a child inherits stdin/stdout.
 cleanup() { rm -f "$SOCK"; }
 trap cleanup EXIT
 
@@ -97,5 +101,5 @@ and return here.${X}
 
 BANNER
 
-# firecracker replaces this shell, so the guest console owns your terminal.
-exec "$FC" --api-sock "$SOCK"
+# The guest console owns your terminal because firecracker inherits it.
+"$FC" --api-sock "$SOCK"

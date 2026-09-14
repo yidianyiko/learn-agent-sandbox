@@ -1,5 +1,5 @@
 /*
- * tinyvmm.c — a virtual machine monitor, in about sixty lines.
+ * tinyvmm.c — a virtual machine monitor, in 79 lines of code.
  *
  * It creates a VM, gives it one page of memory and one CPU, loads twelve
  * bytes of machine code, and runs it. The guest adds two numbers the host
@@ -78,7 +78,9 @@ int main(void)
     const size_t MEM_SIZE = 0x1000;               /* one 4 KiB page */
     void *mem = mmap(NULL, MEM_SIZE, PROT_READ | PROT_WRITE,
                      MAP_SHARED | MAP_ANONYMOUS, -1, 0);
-    MUST(mem == MAP_FAILED ? -1 : 0, "mmap guest memory");
+    /* mmap reports failure with MAP_FAILED, not a negative int, so it does
+     * not fit MUST(). Spelled out rather than bent to fit the macro. */
+    if (mem == MAP_FAILED) { perror("mmap guest memory"); exit(1); }
     memcpy(mem, guest_code, sizeof guest_code);
 
     struct kvm_userspace_memory_region region = {
@@ -104,7 +106,7 @@ int main(void)
     int run_size = ioctl(kvm, KVM_GET_VCPU_MMAP_SIZE, 0);
     MUST(run_size, "KVM_GET_VCPU_MMAP_SIZE");
     struct kvm_run *run = mmap(NULL, run_size, PROT_READ | PROT_WRITE, MAP_SHARED, vcpu, 0);
-    MUST(run == MAP_FAILED ? -1 : 0, "mmap kvm_run");
+    if (run == MAP_FAILED) { perror("mmap kvm_run"); exit(1); }
     printf("vcpu     shared struct is %d bytes\n", run_size);
 
     /* ------------------------------------------------------------------
@@ -154,8 +156,15 @@ int main(void)
 
         switch (run->exit_reason) {
         case KVM_EXIT_IO:
-            /* The data the guest wrote lives inside the shared struct,
-             * at an offset KVM tells us. */
+            /* The data the guest wrote lives inside the shared struct, at
+             * an offset KVM tells us.
+             *
+             * SIMPLIFICATION: we ignore run->io.count. A `rep outsb` moves
+             * several bytes per exit and a real VMM loops over them. Our
+             * guest only issues single-byte `out`, so count is always 1 —
+             * this works, which is not the same as being correct. It is one
+             * concrete instance of the gap between these three lines and
+             * Firecracker's 592-line serial.rs. */
             if (run->io.direction == KVM_EXIT_IO_OUT && run->io.port == 0x3f8) {
                 fwrite((char *)run + run->io.data_offset, 1, run->io.size, stdout);
                 fflush(stdout);

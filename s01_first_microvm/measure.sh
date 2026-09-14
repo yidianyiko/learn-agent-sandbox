@@ -24,12 +24,12 @@ else B=''; D=''; X=''; fi
 
 # Boot once, return "wall_ms kernel_to_init_s log_path".
 boot_once() { # boot_source_json  ready_pattern  extra_api
-  local sock log pid t0 t1 i
+  local sock log pid t0 t1
   sock="${TMPDIR:-/tmp}/fc-m-$$.sock"; log="${TMPDIR:-/tmp}/fc-m-$$.log"
   rm -f "$sock" "$log"
   "$FC" --api-sock "$sock" > "$log" 2>&1 &
   pid=$!
-  for i in $(seq 1 400); do [ -S "$sock" ] && break; sleep 0.005; done
+  for _ in $(seq 1 400); do [ -S "$sock" ] && break; sleep 0.005; done
 
   api() { curl -s --unix-socket "$sock" -X PUT "http://localhost$1" \
                 -H 'Content-Type: application/json' -d "$2" -o /dev/null; }
@@ -39,10 +39,13 @@ boot_once() { # boot_source_json  ready_pattern  extra_api
 
   t0=$(date +%s%N)
   api /actions '{"action_type":"InstanceStart"}'
-  for i in $(seq 1 4000); do grep -qE "$2" "$log" 2>/dev/null && break; sleep 0.002; done
+  for _ in $(seq 1 4000); do grep -qE "$2" "$log" 2>/dev/null && break; sleep 0.002; done
   t1=$(date +%s%N)
   kill $pid 2>/dev/null; wait $pid 2>/dev/null
+  rm -f "$sock"          # the log is handed back to the caller; the socket is not
 
+  # These are set as globals rather than returned, because a shell function
+  # can only return a status. The caller reads them immediately.
   WALL_MS=$(( (t1 - t0) / 1000000 ))
   TO_INIT=$(grep -oP '^\[\s*\K[0-9.]+(?=\].*(Run /sbin/init|Run /init))' "$log" | head -1)
   MOUNT_AT=$(grep -oP '^\[\s*\K[0-9.]+(?=\].*VFS: Mounted root)' "$log" | head -1)
