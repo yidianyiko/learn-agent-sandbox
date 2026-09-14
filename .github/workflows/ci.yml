@@ -1,0 +1,67 @@
+name: ci
+
+# A tutorial dies when its commands stop working. These jobs run the
+# chapters themselves, not unit tests, and the weekly schedule catches
+# upstream assets disappearing while nobody is looking.
+on:
+  push:
+    branches: [main]
+  pull_request:
+  schedule:
+    - cron: '17 6 * * 1'   # Mondays, to catch rot
+  workflow_dispatch:
+
+jobs:
+  lint:
+    name: shell syntax
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v5
+      - name: parse every script
+        run: |
+          fail=0
+          while IFS= read -r f; do
+            if bash -n "$f"; then echo "ok   $f"; else echo "FAIL $f"; fail=1; fi
+          done < <(find . -name '*.sh' -not -path './assets/*')
+          exit $fail
+      - name: shellcheck
+        run: |
+          sudo apt-get update -qq && sudo apt-get install -y -qq shellcheck
+          find . -name '*.sh' -not -path './assets/*' -print0 \
+            | xargs -0 shellcheck -S warning || true   # advisory for now
+
+  s00:
+    name: s00 shared kernel
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v5
+      - name: environment report
+        run: ./scripts/check-env.sh || true
+      - name: run the chapter
+        run: ./s00_shared_kernel/demo.sh
+
+  s01:
+    name: s01 first microVM
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v5
+
+      # GitHub's Ubuntu runners expose /dev/kvm, but the runner user is not
+      # in the kvm group. Same fix as anywhere else: widen the udev rule.
+      # This is the rule from notes/kvm-device.md, edited in public.
+      - name: grant access to /dev/kvm
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' \
+            | sudo tee /etc/udev/rules.d/99-kvm-for-ci.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+          ls -l /dev/kvm || echo "no /dev/kvm on this runner"
+
+      - name: environment report
+        run: ./scripts/check-env.sh
+
+      - name: fetch pinned assets
+        run: ./scripts/fetch-assets.sh
+
+      - name: boot a microVM and measure it
+        run: ./s01_first_microvm/measure.sh
