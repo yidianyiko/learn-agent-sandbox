@@ -2,7 +2,7 @@
 
 [English](README.md) · [中文](README.zh.md)
 
-[s00](../s00_shared_kernel/README.zh.md) → [s01](../s01_first_microvm/README.zh.md) → **s02** → s03 → ... → s08
+[s00](../s00_shared_kernel/README.zh.md) → [s01](../s01_first_microvm/README.zh.md) → **s02** → [s03](../s03_snapshot_restore/README.zh.md) → ... → s08
 
 > **需要：** `/dev/kvm`、一个 C 编译器（`gcc` 或 `clang`）、`make`。不需要 root。
 > **耗时：** 约 30 分钟。**你不需要会 C**——下面有专门一节。
@@ -318,5 +318,5 @@ Firecracker v1.17.0 是 **120,626 行 Rust**（不含测试）。你刚写了 79
 
 ---
 
-**下一章：** s03 — *别启动，恢复。* *（尚未写完）*
+**下一章：** [s03 — 别启动，恢复。](../s03_snapshot_restore/README.zh.md)
 你 guest 的内存，是你自己拥有的一段区域。那么——**如果把它写进一个文件会怎样？**

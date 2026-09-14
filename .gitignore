@@ -102,5 +102,8 @@ Thumbs.db
 tmp/
 scratch/
 
-# s02 build output
+# s02 / s03 build output and snapshots
 s02_write_a_vmm/tinyvmm
+s03_snapshot_restore/tinysnap
+s03_snapshot_restore/snapshot.mem
+s03_snapshot_restore/snapshot.cpu

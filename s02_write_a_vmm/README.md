@@ -2,7 +2,7 @@
 
 [English](README.md) · [中文](README.zh.md)
 
-[s00](../s00_shared_kernel/) → [s01](../s01_first_microvm/) → **s02** → s03 → ... → s08
+[s00](../s00_shared_kernel/) → [s01](../s01_first_microvm/) → **s02** → [s03](../s03_snapshot_restore/) → ... → s08
 
 > **Needs:** `/dev/kvm`, a C compiler (`gcc` or `clang`), `make`. No root.
 > **Time:** about 30 minutes. You do not need to know C — see below.
@@ -337,5 +337,5 @@ skilled, unglamorous volume — and you have already learned the idea.
 
 ---
 
-**Next:** s03 — *Don't boot. Restore.* *(not yet written)*
+**Next:** [s03 — Don't boot. Restore.](../s03_snapshot_restore/)
 Your guest's memory is a region you own. So what happens if you write it to a file?
