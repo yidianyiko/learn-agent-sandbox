@@ -112,3 +112,5 @@ s03_snapshot_restore/snapshot.cpu
 s04_orchestrator/sandboxd
 s04_orchestrator/state/
 s05_fork_parallel/tinyfork
+s06_in_vm_agent/target/
+s06_in_vm_agent/initramfs.cpio

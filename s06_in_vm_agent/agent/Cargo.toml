@@ -1,0 +1,26 @@
+[package]
+name = "agent"
+version = "0.1.0"
+edition = "2021"
+
+# No dependencies. Everything below talks to the kernel through symbols
+# that std has already linked, declared by hand — which is also the point:
+# you can see every syscall this program makes.
+
+[[bin]]
+name = "agent"
+path = "src/main.rs"
+
+[[bin]]
+name = "mkinitramfs"
+path = "src/bin/mkinitramfs.rs"
+
+[[bin]]
+name = "vexec"
+path = "src/bin/vexec.rs"
+
+[profile.release]
+opt-level = "z"
+lto = true
+panic = "abort"
+strip = true

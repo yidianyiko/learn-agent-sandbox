@@ -62,7 +62,7 @@ Each chapter stands on its own. Stop wherever you have what you came for.
 | **s03** | [**Don't boot. Restore.**](s03_snapshot_restore/) | Snapshot/restore written by hand, then the two numbers: 2659 ms vs 16 ms | **C** + curl | yes | ✅ |
 | **s04** | [Control plane, data plane, never mixed](s04_orchestrator/) | A registry that survives being shot, and rediscovers what it was running | **Go** | yes | ✅ |
 | **s05** | [Fork the machine, not the process](s05_fork_parallel/) | Six 256 MiB VMs in 76 MB, because one `mmap` flag shares what they have not changed | **C** + shell | yes | ✅ |
-| **s06** | Someone has to be inside | A tiny static binary in the guest you can `exec` into | Rust | yes | 🚧 |
+| **s06** | [Someone has to be inside](s06_in_vm_agent/) | A dependency-free Rust agent as PID 1, reached over vsock — no network at all | **Rust** | yes | ✅ |
 | **s07** | Now let it reach the internet | tap devices, NAT, port forwarding | Go | yes | 🚧 |
 | **s08** | Now hand it to an agent | A Python SDK, and a coding agent living on your own sandbox | Python | yes | 🚧 |
 

@@ -2,7 +2,7 @@
 
 [English](README.md) · [中文](README.zh.md)
 
-[s00](../s00_shared_kernel/) → [s01](../s01_first_microvm/) → [s02](../s02_write_a_vmm/) → [s03](../s03_snapshot_restore/) → [s04](../s04_orchestrator/) → **s05** → s06 → s07 → s08
+[s00](../s00_shared_kernel/) → [s01](../s01_first_microvm/) → [s02](../s02_write_a_vmm/) → [s03](../s03_snapshot_restore/) → [s04](../s04_orchestrator/) → **s05** → [s06](../s06_in_vm_agent/) → s07 → s08
 
 > **Needs:** `/dev/kvm`, a C compiler, `make`, the fetched assets, and an
 > s03 snapshot (`cd ../s03_snapshot_restore && make && ./tinysnap`).
@@ -222,6 +222,6 @@ Worth doing next:
 
 ---
 
-**Next:** s06 — *Someone has to be inside* *(not yet written)*
+**Next:** [s06 — Someone has to be inside](../s06_in_vm_agent/)
 You can start machines, freeze them and fork them. You still cannot ask one to run a
 command.

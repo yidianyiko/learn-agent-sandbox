@@ -2,7 +2,7 @@
 
 [English](README.md) · [中文](README.zh.md)
 
-[s00](../s00_shared_kernel/README.zh.md) → [s01](../s01_first_microvm/README.zh.md) → [s02](../s02_write_a_vmm/README.zh.md) → [s03](../s03_snapshot_restore/README.zh.md) → [s04](../s04_orchestrator/README.zh.md) → **s05** → s06 → s07 → s08
+[s00](../s00_shared_kernel/README.zh.md) → [s01](../s01_first_microvm/README.zh.md) → [s02](../s02_write_a_vmm/README.zh.md) → [s03](../s03_snapshot_restore/README.zh.md) → [s04](../s04_orchestrator/README.zh.md) → **s05** → [s06](../s06_in_vm_agent/README.zh.md) → s07 → s08
 
 > **需要：** `/dev/kvm`、C 编译器、`make`、已下载的资产，以及一个 s03 的快照
 > （`cd ../s03_snapshot_restore && make && ./tinysnap`）。
@@ -211,5 +211,5 @@ FORKS=12 ./fork.sh
 
 ---
 
-**下一章：** s06 — *里面得有个人* *（尚未写完）*
+**下一章：** [s06 — 里面得有个人](../s06_in_vm_agent/)
 你已经能启动机器、冻住它、分叉它。**但你还没法让其中一台执行一条命令。**

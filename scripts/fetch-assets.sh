@@ -29,6 +29,8 @@ CI_ARTIFACTS="firecracker-ci/20260909-a8e1c3830545-0"
 KERNEL="vmlinux-6.1.186"
 ROOTFS="ubuntu-24.04.squashfs"
 INITRAMFS="initramfs.cpio"
+BUSYBOX="busybox"
+BUSYBOX_VERSION="1.35.0"
 
 S3="https://s3.amazonaws.com/spec.ccfc.min"
 GH="https://github.com/firecracker-microvm/firecracker/releases/download"
@@ -40,6 +42,7 @@ SHA_FC_TGZ="06094a1108ae9e82aa4c23a775aa92758f53f1175d422270d9d6162cb9ade558"
 SHA_KERNEL="51565cd5d8bc6d7f3c856acdc8028ad1ef9996d581ac25f47a03429608c4f6ed"
 SHA_ROOTFS="9e6809adafdbc297a46c96eeab2c03599420be4e81f1de08b53f427cead8eabf"
 SHA_INITRAMFS="7a0bfb917d732dd43b241ebd0e1c3a432077d91c772818369130705b0c9c9229"
+SHA_BUSYBOX="6e123e7f3202a8c1e9b1f94d8941580a25135382b99e8d3e34fb858bba311348"
 
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 ASSETS="$REPO_ROOT/assets"
@@ -105,8 +108,12 @@ tar xzf "firecracker-${FC_VERSION}.tgz"
 # The tarball also carries jailer, the snapshot tools and the seccomp
 # filter. We only need the VMM itself; the rest is left in place for
 # anyone curious enough to look.
-cp "release-${FC_VERSION}-x86_64/firecracker-${FC_VERSION}-x86_64" firecracker
-chmod +x firecracker
+# Install by rename, not by overwrite. cp onto a binary that some VM is
+# still executing fails with ETXTBSY; rename swaps the directory entry and
+# leaves the running process on the old inode, where it is perfectly happy.
+cp "release-${FC_VERSION}-x86_64/firecracker-${FC_VERSION}-x86_64" firecracker.new
+chmod +x firecracker.new
+mv -f firecracker.new firecracker
 
 # And confirm the binary we just installed is the one we pinned.
 FC_REPORTED="$(./firecracker --version 2>&1 | head -1)"
@@ -122,6 +129,14 @@ fetch "$KERNEL"    "${S3}/${CI_ARTIFACTS}/x86_64/${KERNEL}"    "$SHA_KERNEL"
 fetch "$ROOTFS"    "${S3}/${CI_ARTIFACTS}/x86_64/${ROOTFS}"    "$SHA_ROOTFS"
 fetch "$INITRAMFS" "${S3}/${CI_ARTIFACTS}/x86_64/${INITRAMFS}" "$SHA_INITRAMFS"
 
+# s06 puts a shell inside a machine it built itself. This is the upstream
+# static build — BusyBox picks its applet from argv[0], so the filename
+# matters: called anything else it reports "applet not found".
+fetch "$BUSYBOX" \
+      "https://busybox.net/downloads/binaries/${BUSYBOX_VERSION}-x86_64-linux-musl/busybox" \
+      "$SHA_BUSYBOX"
+chmod +x "$BUSYBOX"
+
 cat <<SUMMARY
 
 ${B}Ready.${X}  ${D}(assets/ is gitignored — these are downloads, not source)${X}
@@ -130,6 +145,7 @@ ${B}Ready.${X}  ${D}(assets/ is gitignored — these are downloads, not source)$
   ${KERNEL}      guest kernel, uncompressed ELF
   ${ROOTFS}   Ubuntu rootfs, mounted read-only as shipped
   ${INITRAMFS}       2 MB BusyBox initramfs, for the boot-time comparison
+  ${BUSYBOX}              static BusyBox ${BUSYBOX_VERSION}, the shell s06 ships into a guest
 
 Next: cd s01_first_microvm && ./boot.sh
 SUMMARY
