@@ -64,8 +64,12 @@ credentials.json
 # 5. Build outputs  (Go / Rust / Python)
 # -------------------------------------------------------------
 # Go
-bin/
-dist/
+#
+# NOTE: anchored with a leading slash. A bare `bin/` also matches
+# src/bin/, which is where Rust keeps additional binaries — s06 lost two
+# of its three programs to exactly that before anyone noticed.
+/bin/
+/dist/
 *.exe
 *.test
 vendor/
