@@ -2,7 +2,7 @@
 
 [English](README.md) · [中文](README.zh.md)
 
-**s00** → s01 → s02 → ... → s07
+**s00** → [s01](../s01_first_microvm/README.zh.md) → s02 → ... → s07
 
 > **需要：** 只要 Docker。不需要 KVM，不需要 root。
 > **耗时：** 约 10 分钟。
@@ -158,7 +158,7 @@ cd s00_shared_kernel
 
 ---
 
-**下一章：** s01 — 125 毫秒里的一台虚拟机 *（尚未写完）*。
+**下一章：** [s01 — 一个属于它自己的内核](../s01_first_microvm/README.zh.md)。
 一台拥有自己内核的机器，由你亲手启动。
 
 出发前：[`/dev/kvm` 任务简报](../notes/kvm-device.zh.md)——从这一章起每一章都依赖这个设备。

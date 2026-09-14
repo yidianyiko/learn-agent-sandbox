@@ -207,4 +207,4 @@ should report ready.
 ---
 
 **Back to:** [s00 — Your container is not a sandbox](../s00_shared_kernel/)
-**Onward to:** s01 — A virtual machine in 125 ms *(not yet written)*
+**Onward to:** [s01 — A kernel of its very own](../s01_first_microvm/)

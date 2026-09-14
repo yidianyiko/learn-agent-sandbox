@@ -77,7 +77,7 @@
 | # | 目录 | motto | 语言 | 环境 | 读者产出 |
 |---|---|---|---|---|---|
 | s00 | `s00_shared_kernel` | *Your container is not a sandbox* | Docker | **仅 Docker** | 亲眼看到容器与宿主共享内核的证据 |
-| s01 | `s01_first_microvm` | *A virtual machine in 125 ms* | shell + curl | `/dev/kvm` | 跑起第一个 Firecracker VM，测出启动耗时 |
+| s01 | `s01_first_microvm` | *A kernel of its very own* | shell + curl | `/dev/kvm` | 跑起第一个 Firecracker VM，并拆解启动时间去了哪 |
 | s02 | `s02_snapshot_restore` | ***Don't boot. Restore.*** | shell + curl | `/dev/kvm` | 冷启动 vs 快照恢复的对比数字 |
 | s03 | `s03_orchestrator` | *Control plane, data plane, never mixed* | Go | `/dev/kvm` | 能起停沙箱的 HTTP 服务 |
 | s04 | `s04_fork_parallel` | *Fork the machine, not the process* | Go | `/dev/kvm` | 从一个快照 fork 出 N 个沙箱并行跑 |
@@ -271,7 +271,32 @@ s0(N-1) → **s0N** → s0(N+1)
 1. GitHub Ubuntu runner 的 KVM 可用性 —— s01 落地时实测
 2. 云主机退路的具体机型清单需实测确认
 3. s00 三个演示的具体实现形式（脚本 vs docker-compose）
-4. Firecracker / kernel / rootfs 的具体钉定版本
+4. ~~Firecracker / kernel / rootfs 的具体钉定版本~~ → 已定，见下
+
+### s01 实测确定的事项（2026-09-14）
+
+**钉定版本**（checksum 见 `scripts/fetch-assets.sh`）：
+
+| 资产 | 版本 |
+|---|---|
+| Firecracker | v1.17.0 |
+| CI 产物目录 | `firecracker-ci/20260909-a8e1c3830545-0/` |
+| kernel | `vmlinux-6.1.186` |
+| rootfs | `ubuntu-24.04.squashfs`（只读直挂） |
+| initramfs | `initramfs.cpio`（用于启动时间对照） |
+
+**motto 变更依据**：原定 *"A virtual machine in 125 ms"*。实测 WSL2 上到 shell 提示符
+**2542 ms**（内核 919 ms + systemd ~1.6 s），最小 initramfs 也要 **737 ms**。论文的 125 ms
+测的是 c5.metal 裸机 + 裁剪内核 + 最小 init，读者永远复现不了。挂一个复现不了的数字是
+最快失去信任的方式。改为 *"A kernel of its very own"*，与 s00 结尾的
+"There is no 'its own kernel'" 正反扣合。启动时间拆解转为章节主体内容，并作为 s02 的引子。
+
+**其他实测结论**：
+- **不需要 sudo**：三个 CI 内核均为 `CONFIG_SQUASHFS=y`，可只读直挂 squashfs，
+  绕开官方流程的 `unsquashfs` + `sudo mkfs.ext4`
+- **不要手写 `root=`**：Firecracker 自动追加 `pci=off root=/dev/vda ro` 和
+  `virtio_mmio.device=...`，手写会产生无害但令人困惑的重复
+- **官方 getting-started 是浮动版本设计**（列 S3 桶取最新），教程必须钉死
 
 ---
 

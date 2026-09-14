@@ -198,4 +198,4 @@ id -nG               # 没有 kvm        ← 但当前 shell 看不到
 ---
 
 **返回：** [s00 — 你的容器不是沙箱](../s00_shared_kernel/README.zh.md)
-**前往：** s01 — 125 毫秒里的一台虚拟机 *（尚未写完）*
+**前往：** [s01 — 一个属于它自己的内核](../s01_first_microvm/README.zh.md)

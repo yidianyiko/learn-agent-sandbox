@@ -55,7 +55,7 @@ Each chapter stands on its own. Stop wherever you have what you came for.
 | # | Chapter | You walk away with | Lang | Needs KVM | Status |
 |---|---------|--------------------|------|:---------:|:------:|
 | **s00** | [Your container is not a sandbox](s00_shared_kernel/) | Direct evidence that your container shares the host kernel | shell | **no** | ✅ |
-| **s01** | A virtual machine in 125 ms | A real Firecracker microVM, booted by hand, timed | curl | yes | 🚧 |
+| **s01** | [A kernel of its very own](s01_first_microvm/) | A real Firecracker microVM booted by hand — and where its boot time actually goes | curl | yes | ✅ |
 | **s02** | **Don't boot. Restore.** | The two numbers: cold boot vs. snapshot restore | curl | yes | 🚧 |
 | **s03** | Control plane, data plane, never mixed | An HTTP service that starts and stops sandboxes | Go | yes | 🚧 |
 | **s04** | Fork the machine, not the process | N sandboxes forked from one snapshot, running in parallel | Go | yes | 🚧 |
